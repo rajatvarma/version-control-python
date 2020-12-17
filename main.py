@@ -31,7 +31,7 @@ while not e:
         commands.add(repo_dir, files)
 
     if command[0] == "commit":
-        pass
+        commands.commit()
 
     if command[0] == "log":
         pass
