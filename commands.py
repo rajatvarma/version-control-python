@@ -10,7 +10,8 @@ ver = 1
 
 def init(dir):
     os.mkdir(os.path.join(dir, ".vcr"))
-    sql_wrapper.init_repo(dir.split("/")[-1])
+    
+    #sql_wrapper.init_repo(dir.split("/")[-1])
 
 
 def add(dir, file_list):
@@ -44,19 +45,23 @@ def show():
         print(track)
 
 
-def commit():
-    open(fname, "r")
-    for line_number in range(len(f.split('\n'))):
-        if line not in staged_file:
-            additions.append(line)
-        else:
-            deletions.append(line)
-
-
-
-def rollback(commit_id):
-    return none
-
-
-def reset():
-    return none
+def commit(dir):
+    
+    os.chdir(os.path.join(dir, ".vcr"))
+    print(os.getcwd())
+    f = open("files.txt", "r")
+    for fname in f.readlines():
+        print(fname)
+        os.chdir('..')
+        print(os.getcwd())
+        open(fname, "r")
+        change = fname.readlines()
+        msg = input("enter message (optional)")
+        if msg == '':
+            msg = "none"
+        import random
+        random_number = random.randint(0,16777215)
+        hex_number = str(hex(random_number))
+        hex_number ='#'+ hex_number[2:]
+        sql_wrappeer.commit(dir,hex_number ,msg , change, fname)
+        os.chdir(os.path.join(dir, ".vcr"))
