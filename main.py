@@ -2,6 +2,8 @@ import commands
 import os
 import mysql.connector
 
+#C:/Users/rajat/Desktop/rajatportal
+
 repo_dir = input("Enter directory name:")
 
 e = False
@@ -17,7 +19,6 @@ while not e:
 
     try:
         os.chdir(os.path.join(repo_dir, ".vcr"))
-
     except:
         pass
     if command[0] == "add":
@@ -25,19 +26,16 @@ while not e:
         if command[1] == "*":
             files = []
             for r, d, f in os.walk(repo_dir):
-                files = f
+                files += f
         else:
             files = command[1:]
         commands.add(repo_dir, files)
 
     if command[0] == "commit":
-        commands.commit()
+        commands.commit(repo_dir)
 
     if command[0] == "log":
         pass
 
     if command[0] == "quit":
         e = True
-
-    else:
-        print("This command does not exist. Run 'help' for a list of all commands")

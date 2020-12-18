@@ -3,6 +3,7 @@ import os
 from os import path
 import sql_wrapper
 
+#C:/Users/rajat/Desktop/textfiles
 
 track = ()
 ver = 1
@@ -10,8 +11,7 @@ ver = 1
 
 def init(dir):
     os.mkdir(os.path.join(dir, ".vcr"))
-    
-    #sql_wrapper.init_repo(dir.split("/")[-1])
+    sql_wrapper.init_repo(dir.split("/")[-1])
 
 
 def add(dir, file_list):
@@ -22,16 +22,11 @@ def add(dir, file_list):
         tracking_list = temp_file.read()
         temp_file.close()
         
+        allfiles = []
+        for r, d, i in os.walk(dir):
+            allfiles.append(i)
         for i in file_list:
-            if i not in tracking_list:
-                f.write(i+"\n")
-                
-                '''
-                if i in os.walk(dir):
-                    f.write(i+"\n")
-                else:
-                    print("This file does not exist in this directory")
-                '''
+            f.write(i+"\n")
     
     except FileNotFoundError:
         print("This directory has not been initialised as a repository. Run init to intitlialise it.")
@@ -46,22 +41,20 @@ def show():
 
 
 def commit(dir):
-    
     os.chdir(os.path.join(dir, ".vcr"))
-    print(os.getcwd())
     f = open("files.txt", "r")
+    msg = input("enter message (optional)")
+    if msg == '':
+        msg = "none"
+    import random
     for fname in f.readlines():
-        print(fname)
-        os.chdir('..')
-        print(os.getcwd())
-        open(fname, "r")
-        change = fname.readlines()
-        msg = input("enter message (optional)")
-        if msg == '':
-            msg = "none"
-        import random
-        random_number = random.randint(0,16777215)
-        hex_number = str(hex(random_number))
-        hex_number ='#'+ hex_number[2:]
-        sql_wrappeer.commit(dir,hex_number ,msg , change, fname)
-        os.chdir(os.path.join(dir, ".vcr"))
+        os.chdir(dir)
+        if fname[0] != "." and fname != "files.txt":
+            openfile = open(fname[:-1], "r")
+            change = openfile.read()
+            
+            random_number = random.randint(0, 16777215)
+            hex_number = str(hex(random_number))
+            hex_number ='#'+ hex_number[2:]
+            sql_wrapper.commit(dir.split("/")[-1], hex_number, msg, change, fname)
+            os.chdir(os.path.join(dir, ".vcr"))
