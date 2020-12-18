@@ -3,7 +3,6 @@ import os
 from os import path
 import sql_wrapper
 
-#C:/Users/rajat/Desktop/textfiles
 
 track = ()
 ver = 1
@@ -25,7 +24,7 @@ def add(dir, file_list):
         allfiles = []
         for r, d, i in os.walk(dir):
             allfiles.append(i)
-        for i in file_list:
+        for i in file_list and i != "files.txt":
             f.write(i+"\n")
     
     except FileNotFoundError:

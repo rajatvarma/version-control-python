@@ -2,8 +2,6 @@ import commands
 import os
 import mysql.connector
 
-#C:/Users/rajat/Desktop/rajatportal
-
 repo_dir = input("Enter directory name:")
 
 e = False
