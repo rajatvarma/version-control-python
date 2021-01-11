@@ -1,6 +1,4 @@
-import shutil
 import os
-from os import path
 import sql_wrapper
 
 
@@ -57,3 +55,7 @@ def commit(dir):
             hex_number ='#'+ hex_number[2:]
             sql_wrapper.commit(dir.split("/")[-1], hex_number, msg, change, fname)
             os.chdir(os.path.join(dir, ".vcr"))
+
+def log(dir):
+    sql_wrapper.log_
+    os.chdir()

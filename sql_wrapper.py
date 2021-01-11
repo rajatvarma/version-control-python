@@ -19,3 +19,6 @@ def init_repo(repo_name):
 def commit(repo_name, commit_id, message, changes, filename):
     cur.execute('''INSERT INTO %s VALUES ('%s', '%s', '%s', '%s')''' % (repo_name, commit_id, filename, message, changes))
     conn.commit()
+
+def log(repo_name):
+    eoiuroirh;  

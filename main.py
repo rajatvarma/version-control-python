@@ -1,6 +1,5 @@
 import commands
 import os
-import mysql.connector
 
 repo_dir = input("Enter directory name:")
 
@@ -33,7 +32,12 @@ while not e:
         commands.commit(repo_dir)
 
     if command[0] == "log":
-        pass
+        commands.log()
 
     if command[0] == "quit":
         e = True
+    if commands[0] == "rollback":
+        commands.rollback()
+
+    
+    
