@@ -1,14 +1,25 @@
 import os
+from mysql.connector.connection import MySQLConnection
+from mysql.connector import errors
 import sql_wrapper
+import random
+import time
 
 
 track = ()
 ver = 1
 
 
-def init(dir):
-    os.mkdir(os.path.join(dir, ".vcr"))
-    sql_wrapper.init_repo(dir.split("/")[-1])
+def init(repo_name, dir):
+    try:
+        sql_wrapper.init_repo(repo_name, dir)
+    except errors.ProgrammingError:
+         print("There was an internal error. However, you may continue to run your commands as normal.")
+    temp = os.path.join(dir, ".vcr")
+    os.mkdir(temp)
+    os.chdir(temp)
+    list_of_files = open("files.txt", "w+")
+    log = open("logs.txt", "w+")
 
 
 def add(dir, file_list):
@@ -22,40 +33,62 @@ def add(dir, file_list):
         allfiles = []
         for r, d, i in os.walk(dir):
             allfiles.append(i)
-        for i in file_list and i != "files.txt":
-            f.write(i+"\n")
-    
+        files = ""
+        for i in file_list:
+            if i != "files.txt" and i != "logs.txt":
+                print("Adding file:", i)
+                f.write(i+'\n')
+                files += i+", "
+        print("All files added")
+        f = open("logs.txt", "a")
+        log = "[ADD] " + files + str(time.time()) + '\n'
+        print(log)
+        f.write(log)
+        f.close()
     except FileNotFoundError:
         print("This directory has not been initialised as a repository. Run init to intitlialise it.")
 
 
 def show():
-    try:        
-        for i in track:
-            print(i[0])
-    except:
-        print(track)
+    for i in sql_wrapper.show():
+        print(i)
 
 
-def commit(dir):
+def commit(dir, name):
     os.chdir(os.path.join(dir, ".vcr"))
     f = open("files.txt", "r")
     msg = input("enter message (optional)")
     if msg == '':
         msg = "none"
-    import random
-    for fname in f.readlines():
+    allFiles = f.readlines()
+    for fname in allFiles:
         os.chdir(dir)
-        if fname[0] != "." and fname != "files.txt":
+        if fname[0] != "." and fname != "files.txt" and fname != "logs.txt":
             openfile = open(fname[:-1], "r")
-            change = openfile.read()
-            
+            contents = openfile.read()
+            changes = ""
+            for char in contents:
+                if char == '"':
+                    changes += "&dquot"
+                    continue
+                elif char == "'":
+                    changes += "&quot"
+                    continue
+                else:
+                    changes += char
             random_number = random.randint(0, 16777215)
             hex_number = str(hex(random_number))
             hex_number ='#'+ hex_number[2:]
-            sql_wrapper.commit(dir.split("/")[-1], hex_number, msg, change, fname)
-            os.chdir(os.path.join(dir, ".vcr"))
+            sql_wrapper.commit(name, hex_number, msg, changes, fname[:-1])
+            os.chdir(dir+'/.vcr')
+            f = open("logs.txt", "a")
+            log = "[COMMIT] " + str(hex_number) + " " + fname[:-1] + " " + str(time.time()) + '\n'
+            f.write(log)
+            f.close()
 
-def log(dir):
-    sql_wrapper.log_
-    os.chdir()
+        
+def rollback(dir, name, hex_code):
+    os.chdir(dir)
+    r = sql_wrapper.rollback(name, hex_code)[0][1]
+    file = open(r[0][0], "w")
+    file.write(r[0][1])
