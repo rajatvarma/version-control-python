@@ -11,11 +11,12 @@ ver = 1
 
 
 def init(repo_name, dir):
-    try:
+    sql_wrapper.init_repo(repo_name, dir)
+    '''try:
         sql_wrapper.init_repo(repo_name, dir)
     except errors.ProgrammingError:
-         print("There was an internal error. However, you may continue to run your commands as normal.")
-    temp = os.path.join(dir, ".vcr")
+         print("There was an internal error. However, you may continue to run your commands as normal.")'''
+    temp =dir+ "/.vcr"
     os.mkdir(temp)
     os.chdir(temp)
     list_of_files = open("files.txt", "w+")
@@ -48,19 +49,16 @@ def add(dir, file_list):
     except FileNotFoundError:
         print("This directory has not been initialised as a repository. Run init to intitlialise it.")
 
-
-def show():
-    for i in sql_wrapper.show():
-        print(i)
-
-
 def commit(dir, name):
-    os.chdir(os.path.join(dir, ".vcr"))
+    os.chdir(dir+"/.vcr")
     f = open("files.txt", "r")
     msg = input("enter message (optional)")
     if msg == '':
         msg = "none"
     allFiles = f.readlines()
+    random_number = random.randint(0, 16777215)
+    hex_number = str(hex(random_number))
+    hex_number ='#'+ hex_number[2:]
     for fname in allFiles:
         os.chdir(dir)
         if fname[0] != "." and fname != "files.txt" and fname != "logs.txt":
@@ -76,9 +74,7 @@ def commit(dir, name):
                     continue
                 else:
                     changes += char
-            random_number = random.randint(0, 16777215)
-            hex_number = str(hex(random_number))
-            hex_number ='#'+ hex_number[2:]
+           
             sql_wrapper.commit(name, hex_number, msg, changes, fname[:-1])
             os.chdir(dir+'/.vcr')
             f = open("logs.txt", "a")
@@ -89,6 +85,8 @@ def commit(dir, name):
         
 def rollback(dir, name, hex_code):
     os.chdir(dir)
-    r = sql_wrapper.rollback(name, hex_code)[0][1]
+    r = sql_wrapper.rollback(name, hex_code)
+    print(r)
     file = open(r[0][0], "w")
     file.write(r[0][1])
+    file.close()

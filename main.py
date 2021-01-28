@@ -58,9 +58,6 @@ while not e:
     if command[0] == "rollback":
         id = input("Enter the commit ID: ")
         commands.rollback(repo_dir, repo_name, id)
-
-    if command[0] == "show":
-        commands.show()
     
     if command[0] == "quit":
         e = True
