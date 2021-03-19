@@ -61,7 +61,7 @@ def commit(dir, name):
     hex_number ='#'+ hex_number[2:]
     for fname in allFiles:
         os.chdir(dir)
-        if fname[0] != "." and fname != "files.txt" and fname != "logs.txt":
+        if fname[0] != "." and fname[:-1] != 'files.txt' and fname[:-1] != "logs.txt":
             openfile = open(fname[:-1], "r")
             contents = openfile.read()
             changes = ""

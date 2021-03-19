@@ -25,6 +25,5 @@ def commit(repo_name, commit_id, message, changes, filename):
 
 def rollback(rname, id):
     query = "SELECT file_name, contents FROM %s WHERE commit_id = '%s'" % (rname, id)
-    print(query)
     cur.execute(query)
     return cur.fetchall()
