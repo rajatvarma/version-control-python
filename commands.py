@@ -49,10 +49,10 @@ def add(dir, file_list):
     except FileNotFoundError:
         print("This directory has not been initialised as a repository. Run init to intitlialise it.")
 
-def commit(dir, name):
+def commit(dir, name, msg):
     os.chdir(dir+"/.vcr")
     f = open("files.txt", "r")
-    msg = input("enter message (optional)")
+    #msg = input("enter message (optional)")
     if msg == '':
         msg = "none"
     allFiles = f.readlines()

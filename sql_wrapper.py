@@ -1,5 +1,5 @@
 import mysql.connector
-password = input("Enter your MySQL password: ")
+password = "root"
 conn = mysql.connector.connect(host="localhost", user="root", password=password)
 cur = conn.cursor()
 
@@ -13,9 +13,12 @@ except:
     conn.commit()
 
 def init_repo(repo_name, path):
-    query = '''CREATE TABLE %s (commit_id varchar(10), file_name varchar(100), message varchar(200), contents varchar(65000)) ''' % repo_name
-    cur.execute(query)
-    conn.commit()
+    try:
+        query = '''CREATE TABLE %s (commit_id varchar(10), file_name varchar(100), message varchar(200), contents text) ''' % repo_name
+        cur.execute(query)
+        conn.commit()
+    except:
+        pass
 
 
 def commit(repo_name, commit_id, message, changes, filename):

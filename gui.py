@@ -1,86 +1,5 @@
-import commands
-import os
-
-#C:\Users\kunal\oof
 import tkinter as tk
-
-
-# x = r'{}'.format(input("Enter directory path: "))
-
-# print(repo_dir)
-# repo_dir = ""
-# x="default"
-
-# cmd = "default"
-# path="default"
-# repo_name="default"
-
-def mf_1():
-    repo_dir = path
-    repo_name = repo_dir.split("/")[-1].replace(" ", "_")
-    print(repo_name)
-    e = False
-    while not e:
-        #command = input("$>").split(" ")
-
-        if cmd == "init":
-            print("INIT YAY")
-            try:
-                commands.init(repo_name, repo_dir)
-                os.chdir(os.path.join(repo_dir, ".vcr"))
-            except FileExistsError:
-                print("This folder is already a repository")
-        try:
-            os.chdir(os.path.join(repo_dir, ".vcr"))
-        
-        except:
-            pass
-
-        if cmd == "add":
-            files = []
-            try:
-                if command[1] == "*":
-                    ignoreExt = input("Enter the file extensions you want to ignore (separated by a comma (,). \n For example, if you wish to ignore all .pyc files, please enter 'pyc' only: ").split(',')
-                    print(ignoreExt)
-                    ignoreNames = input("Enter the file names you want to ignore (separated by a comma (,)): ")
-                    files = []
-                    for r, d, f in os.walk(repo_dir):
-                        for i in f:
-                            if i.split('.')[-1] in ignoreExt:
-                                continue
-                            if i in ignoreNames.split(','):
-                                continue
-                            files.append(i)
-                else:
-                    files = command[1:]
-                commands.add(repo_dir, files)
-            except IndexError:
-                print("Please specify the files to be added. Use 'add *' in case you want to add all files")
-
-        if cmd == "commit":
-            commands.commit(repo_dir, repo_name)
-
-        if cmd == "logs":
-            os.chdir(repo_dir+'/.vcr')
-            logs = open("logs.txt")
-            for i in logs.read().split('\n'):
-                print(i)
-
-        if cmd == "rollback":
-            id = input("Enter the commit ID: ")
-            commands.rollback(repo_dir, repo_name, id)
-        if cmd == "help":
-            print("""\nChoose an operation from the ones below\n
-    init
-    add
-    commit
-    rollback
-    logs
-    quit\n""")
-        
-        if cmd == "quit":
-            e = True
-
+import main
 
 def on_commit():
     commit_window = tk.Toplevel(root)
@@ -89,9 +8,6 @@ def on_commit():
 
     # Function to close the commit window
     def close_commit_window():
-        messg = commit_text_entry.get()
-        commands.commit(repo_dir, repo_name, messg)
-        title_label.config(text = "Commit Successful")
         commit_window.destroy()
 
     # Title for the commit window
@@ -123,27 +39,6 @@ def on_add():
 
     # Function to close the commit window
     def close_add_window():
-        filename = add_text_entry.get().split(" ")
-        files = []
-        try:
-            if filename[0] == "*":
-                # ignoreExt = input("Enter the file extensions you want to ignore (separated by a comma (,). \n For example, if you wish to ignore all .pyc files, please enter 'pyc' only: ").split(',')
-                # print(ignoreExt)
-                # ignoreNames = input("Enter the file names you want to ignore (separated by a comma (,)): ")
-                files = []
-                for r, d, f in os.walk(repo_dir):
-                    for i in f:
-                        # if i.split('.')[-1] in ignoreExt:
-                        #     continue
-                        # if i in ignoreNames.split(','):
-                        #     continue
-                        files.append(i)
-            else:
-                files = filename[0:]
-            commands.add(repo_dir, files)
-        except IndexError:
-            print("Please specify the files to be added. Use 'add *' in case you want to add all files")
-
         add_window.destroy()
 
     # Title for the commit window
@@ -169,13 +64,8 @@ def on_add():
     cancel_button.pack(side=tk.LEFT, padx=5)
 
 def on_logs():
-    os.chdir(repo_dir+'/.vcr')
-    logs = open("logs.txt")
-    for i in logs.read().split('\n'):
-        print(i)
-
-    #log_label = tk.Label(log_window, text="")
-    
+    print("Logs button clicked")
+    # Add your 'Logs' button logic here
 
 def on_rollback():
     rb_window = tk.Toplevel(root)
@@ -184,8 +74,6 @@ def on_rollback():
 
     # Function to close the commit window
     def close_rb_window():
-        id = rb_text_entry.get()
-        commands.rollback(repo_dir, repo_name, id)
         rb_window.destroy()
 
     # Title for the commit window
@@ -216,25 +104,9 @@ def on_init():
     init_window.minsize(300, 150)  # Set a minimum window size for the init window
 
     def get_info():
-        x = init_text_entry.get()
-        global repo_dir, repo_name
-        repo_dir = x.replace("\\", "/")
-        repo_name = repo_dir.split("/")[-1].replace(" ", "_")
-        
-        print(repo_dir, repo_name)
-        cmd = "init"
-        if cmd == "init":
-            print("INIT YAY")
-            try:
-                commands.init(repo_name, repo_dir)
-                os.chdir(os.path.join(repo_dir, ".vcr"))
-            except FileExistsError:
-                print("This folder is already a repository")
-        try:
-            os.chdir(os.path.join(repo_dir, ".vcr"))
-        
-        except:
-            pass
+        pathInfo = init_text_entry.get()
+        print(pathInfo)
+        #main.mainfunc(pathInfo, "init")
         close_init_window()
 
     # Function to close the init window
@@ -257,34 +129,27 @@ def on_init():
     button_frame = tk.Frame(init_window)
     button_frame.pack(pady=10)
 
-    init_button = tk.Button(button_frame, text="Initialize", command=get_info, width=10, height=1)
+    init_button = tk.Button(button_frame, text="Initialize", command=close_init_window, width=10, height=1)
     init_button.pack(side=tk.LEFT, padx=5)
 
     cancel_button = tk.Button(button_frame, text="Cancel", command=close_init_window, width=10, height=1)
     cancel_button.pack(side=tk.LEFT, padx=5)
 
 def on_use_current_path():
-    print("""\nChoose an operation from the ones below\n
-    init: Initialize the repository. Needed for 1st time setup
-    add: list of files to be tracked for changes
-    commit: Save changes of all files being tracked
-    rollback: Rollback to the previous version (specified by commit ID)
-    logs: Display detailed logs of transactions commited\n""")
+    print("Use current path button clicked")
+    
+    # Add your 'Use current path' button logic here
+
+def getPath():
+    pathInfo = on_init.init_text_entry.get()
+    print(pathInfo)
+    on_init.close_init_window()
+
 
 # Create the main application window
 root = tk.Tk()
 root.title("Version Control System")
 root.minsize(500, 300)  # Set a minimum window size
-
-repo_dir=''
-repo_name=''
-help_text  ="""\nChoose an operation from the ones below\n
-    init
-    add
-    commit
-    rollback
-    logs
-    quit\n"""
 
 # Add a big title and subtitle
 title_label = tk.Label(root, text="Version Control System", font=("Arial", 24, "bold"))
@@ -314,7 +179,7 @@ rollback_button = tk.Button(button_frame, text="Rollback", command=on_rollback, 
 rollback_button.pack(side=tk.LEFT, padx=10)
 
 # Add the 'Use current path' button with padding and button size
-use_current_path_button = tk.Button(root, text="Help", command=on_use_current_path, width=20, height=2)
+use_current_path_button = tk.Button(root, text="Use current path", command=on_use_current_path, width=20, height=2)
 use_current_path_button.pack(pady=10)
 
 root.mainloop()
